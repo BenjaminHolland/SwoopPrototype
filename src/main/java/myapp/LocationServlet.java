@@ -21,34 +21,8 @@ import java.util.Random;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import myapp.Location;
 
-class Location{
-    public Double lat;
-    public Double lon;
-    public String name;
-    public Integer price;
-    public Integer rating;
-    Location(Double lat,Double lon,String name,Integer price,Integer rating){
-        this.lat=lat;
-        this.lon=lon;
-        this.price=price;
-        this.name=name;
-        this.rating=rating;
-    }
-    Location(){
-
-    }
-    @java.lang.Override
-    public java.lang.String toString() {
-        return "{" +
-                "\"lat\":" + lat +
-                ",\"lng\":" + -lon +
-                ",\"name\":\"" + name +"\""+
-                ",\"price\":" + price +
-                ",\"rating\":" + rating +
-                '}';
-    }
-}
 public class LocationServlet extends HttpServlet {
 
     public static String[] Adj=new String[]{"Cool","Great","Amazing","Perfect","Small","Scenic","Wonderful","Ocean","Tiny","Big"};
