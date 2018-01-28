@@ -65,9 +65,8 @@
 
             <h1 class="my-4">Available Spots</h1>
             <div class="list-group">
-                <a href="#" class="list-group-item">Re</a>
-                <a href="#" class="list-group-item">Category 2</a>
-                <a href="#" class="list-group-item">Category 3</a>
+                <a href="#" class="list-group-item">Sell your spot!</a>
+                <a href="#" class="list-group-item">Partner with us!</a>
             </div>
 
         </div>
@@ -94,8 +93,10 @@
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script>
+    var descriptors=["Cool","Great","Amazing","Perfect","Small","Scenic","Wonderful","Ocean","Tiny","Big"];
     var locations={};
     var centerLocation={lat:36.6002,lng:-121.8947};
+
     function guid() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -104,12 +105,13 @@
     }
 
     function generateRandomLocation() {
+        var descriptor=descriptors[Math.floor(Math.random()*descriptors.length)];
         return {
             id: guid(),
             lat: centerLocation.lat + (Math.random() - 0.5) * 0.04,
             lng: centerLocation.lng + (Math.random() - 0.5) * 0.04,
             rating: 1 + Math.floor(Math.random() * 5),
-            name: "Spot " + 1,
+            name: descriptor+" Spot",
             price: (1 + Math.floor(Math.random() * 20)) * 100,
             markers: [],
             map:null,
@@ -119,26 +121,32 @@
     }
 
     var ratingGradient=['FFE50007','FFDB6F00','FFC6D200','FF50C800','FF00BF1B'];
+    //Instead of doing what it does, this should send a request to the LocationServlet and
+    //merge the returned list with the currently displayed results.
     function addLocation(location,areaMap){
         if(!locations[location.id]){
             location.card=createCardElement(location);
             var mapElement= location.card.find('div[name="submap"]')[0];
 
-            var iconUri='https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_white'+location.rating+'.png';
+            var iconUri='https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_red'+location.rating+'.png';
+
             location.map=new google.maps.Map(mapElement,{
                 center: location,
                 zoom:16
             });
+
             location.markers.push(new google.maps.Marker({
                 position: location,
                 map:location.map,
                 icon:iconUri,
             }));
+
             location.markers.push(new google.maps.Marker({
                 position: location,
                 map:areaMap,
                 icon:iconUri,
             }));
+
             $('#cards').append(location.card);
             var button=location.card.find('button[guid=\"'+location.id+'\"]')[0];
             $(button).click(function(e){
@@ -150,6 +158,9 @@
             locations[location.id]=location;
         }
     }
+
+    //This function should send a request to the LocationServlet as well as removing the location from the display
+    //collection.
     function remLocation(id){
         if(locations[id]){
             var location=locations[id];
