@@ -17,7 +17,9 @@
 package myapp;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,6 +28,34 @@ import myapp.Location;
 public class LocationServlet extends HttpServlet {
 
     public static String[] Adj=new String[]{"Cool","Great","Amazing","Perfect","Small","Scenic","Wonderful","Ocean","Tiny","Big"};
+
+
+    /***
+     * Read the list of locations.
+     * @return A list of available locations available in the area.
+     */
+    private List<Location> readLocations(int limit){
+        return null;
+    }
+    /***
+     * Atomically add a location to the list.
+     * @param location The location to add to the list.
+     * @param limit Limits the size of the returned list.
+     * @return A list of available locations.
+     */
+    private List<Location> addAndReadLocationsAtomic(Location location,int limit){
+        return null;
+    }
+
+    /***
+     * Atomically remove a location from the list.
+     * @param id The id of the location to remove.
+     * @param limit Limits the size of the returned list.
+     * @return A list of available locations.
+     */
+    private List<Location> remAndReadLocationsAtomic(UUID id,int limit){
+        return null;
+    }
 
     public Location[] GenerateLocations(){
         Location[] locations=new Location[10];
@@ -43,6 +73,7 @@ public class LocationServlet extends HttpServlet {
         }
         return locations;
     }
+
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
