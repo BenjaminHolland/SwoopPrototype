@@ -13,3 +13,14 @@ body {
     padding-top: 56px;
   }
 }
+:root{
+  --brand-primary: #E74A81;
+  --brand-light: #F5B6CD;
+}
+@font-face {
+  font-family: 'Lobster';
+  src: url('fonts/lobster_1.3.woff2') format('woff2'),
+  url('fonts/lobster_1.3.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
