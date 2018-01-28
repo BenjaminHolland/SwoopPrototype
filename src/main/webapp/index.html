@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Swoop</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/shop-homepage.css" rel="stylesheet">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <style>
+        .row{
+            margin-top:10px;
+            margin-bottom:10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">Swoop</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-lg-3">
+
+            <h1 class="my-4">Available Spots</h1>
+            <div class="list-group">
+                <a href="#" class="list-group-item">Re</a>
+                <a href="#" class="list-group-item">Category 2</a>
+                <a href="#" class="list-group-item">Category 3</a>
+            </div>
+
+        </div>
+        <!-- /.col-lg-3 -->
+
+        <div class="col-lg-9">
+            <div id="map" style="height: 400px;"></div>
+        </div>
+
+        <div id="cards" class="row" style="margin-top: 5px" >
+
+
+        </div>
+    </div>
+</div>
+</div>
+
+<footer class="py-5 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2017</p>
+    </div>
+</footer>
+
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script>
+    var locations={};
+    var centerLocation={lat:36.6002,lng:-121.8947};
+    function guid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+            return v.toString(16);
+        });
+    }
+    function generateRandomLocation() {
+        return {
+            id: guid(),
+            lat: centerLocation.lat + (Math.random() - 0.5) * 0.04,
+            lng: centerLocation.lng + (Math.random() - 0.5) * 0.04,
+            rating: 1 + Math.floor(Math.random() * 5),
+            name: "Spot " + 1,
+            price: (1 + Math.floor(Math.random() * 20)) * 100,
+            markers: [],
+            map:null,
+            card: null,
+
+        };
+    }
+
+
+    function addLocation(location,areaMap){
+        if(!locations[location.id]){
+            location.card=createCardElement(location);
+            var mapElement= location.card.find('div[name="submap"]')[0];
+            location.map=new google.maps.Map(mapElement,{
+                center: location,
+                zoom:16
+            });
+            location.markers.push(new google.maps.Marker({
+                position: location,
+                map:location.map,
+            }));
+            location.markers.push(new google.maps.Marker({
+                position: location,
+                map:areaMap
+            }));
+            $('#cards').append(location.card);
+            var button=location.card.find('button[guid=\"'+location.id+'\"]')[0];
+            $(button).click(function(e){
+                e.preventDefault();
+                remLocation($(this).attr('guid'));
+                e.stopImmediatePropagation();
+
+            });
+            locations[location.id]=location;
+        }
+    }
+    function remLocation(id){
+        if(locations[id]){
+            var location=locations[id];
+            location.map=null;
+            location.markers.forEach(function(marker){
+                marker.setMap(null);
+            });
+            delete locations[id];
+            location.card.remove();
+        }
+    }
+
+
+
+    function createCardElement(location){
+        return $(
+            "           <div class=\"col-lg-4 col-md-6 mb-4\" guid=" + location.id + ">\n" +
+            "                <div class=\"card\">\n" +
+            "                    <div name='submap' style='height: 250px;'></div>\n" +
+            "                    <div class=\"card-body\">\n" +
+            "                        <h4 class=\"cardoverflow-title\">\n" +location.name+"</h4>"+
+            "                        <button guid=\"" + location.id +"\"> " + "Buy" + "</button>\n" +
+            "                        <h5>$" + (location.price / 100.0) + "</h5>\n" +
+            "                        <p class=\"card-text\">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet numquam\n" +
+            "                            aspernatur!</p>\n" +
+            "                    </div>\n" +
+            "                    <div class=\"card-footer\">\n" +
+            "                        <small class=\"text-muted\">" + createRatingString(location.rating).join(' ') + "</small>\n" +
+            "                    </div>\n" +
+            "                </div>\n" +
+            "            </div>");
+    }
+    
+    function createRatingString(rating){
+        var stars=["&#9734;","&#9734;","&#9734;","&#9734;","&#9734;"];
+        stars.fill('&#9733;',0,rating);
+        return stars;
+    }
+
+    function initMap() {
+        var areaMap = new google.maps.Map(document.getElementById('map'), {
+            zoom: 12,
+            center: centerLocation
+        });
+
+        for(var index=0;index<10;index++){
+            addLocation(generateRandomLocation(),areaMap)
+
+
+        }
+
+    }
+
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-xxYVRxcjSlutfz_jtsoi0hy7COlSFHg&callback=initMap"
+        type="text/javascript">
+
+</script>
+</body>
+
+</html>

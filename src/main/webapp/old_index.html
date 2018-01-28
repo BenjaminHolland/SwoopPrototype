@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+    <title>App Engine Demo</title>
+
+    <style>
+        #map {
+            height: 400px;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+</head>
+<body>
+<div class='container-fluid'>
+    <div class="row">
+        <div class="col-md-2">
+            <img class="" src="SwoopLogo.png" width="75%" align="center">
+        </div>
+        <div class="col-md-10">
+            <h1 class="display-1">
+                Swoop
+            </h1>
+        </div>
+
+    </div>
+    <div id="result">Loading...</div>
+    <div id="data">Wow...</div>
+    <div id="map" class="container-fluid"></div>
+    <script>
+        $(document).ready(function () {
+            $.getJSON('/demo', function (data) {
+                $('#result').html("Hello, " + data.name);
+            });
+
+            $.getJSON('/extra', function (data) {
+                $('#data').html(data.data);
+            });
+        });
+
+        function initMap() {
+            var myLatLng = {lat: 36.6002, lng: -121.8947};
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 4,
+                center: myLatLng
+            });
+            console.log("Hello World");
+            $.getJSON('/locations',function(data){
+                for(var i=0;i<data.length;i++){
+                    var marker = new google.maps.Marker({
+                        position: data[i],
+                        map: map,
+                        title: 'Dummy Data!!'
+                    });
+                }
+            })
+        }
+
+    </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-xxYVRxcjSlutfz_jtsoi0hy7COlSFHg&callback=initMap"
+            type="text/javascript">
+
+    </script>
+</body>
+
+</html>
